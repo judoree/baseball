@@ -1,13 +1,7 @@
 import { Link, type MetaFunction } from 'react-router';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
-import { ChevronsUpIcon, EyeIcon, MessageCircleIcon } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { ProductCard } from '../../features/products/components/product-card';
+import { PostCard } from '../../features/community/components/post-card';
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,7 +12,7 @@ export const meta: MetaFunction = () => {
 
 export default function Homepage() {
   return (
-    <div className="px-20">
+    <div className="px-20 space-y-40">
       <div className="grid grid-cols-3 gap-4">
         <div>
           <h2 className=" text-5xl font-bold leading-tight tracking-tight">
@@ -27,37 +21,48 @@ export default function Homepage() {
           <p className="text-xl font-light text-foreground">
             The best products made by our community today
           </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to={'/products/leaderbords'}>
+              Explore all products &rarr;
+            </Link>
+          </Button>
         </div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <ProductCard
+            key={index}
+            to="/products/productId"
+            title="Product Name"
+            description="Product Description"
+            commentsCount={12}
+            viewsCount={12}
+            votesCount={120}
+          />
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-4">
         <div>
-          <Link to={'/products/productId'}>
-            <Card className="w-full flex flex-row items-center justify-between bg-transparent hover:bg-primary/10">
-              <CardHeader className="w-[-webkit-fill-available]">
-                <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
-                  Product Name
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Product Description
-                </CardDescription>
-                <div className="flex items-center gap-4 mt-2">
-                  <div className=" flex items-center gap-px text-xs text-muted-foreground">
-                    <MessageCircleIcon className="w-4 h-4" />
-                    <span>12</span>
-                  </div>
-                  <div className=" flex items-center gap-px text-xs text-muted-foreground">
-                    <EyeIcon className="w-4 h-4" />
-                    <span>12</span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardFooter className="py-0">
-                <Button variant="outline" className="flex flex-col h-18">
-                  <ChevronsUpIcon className="size-4 shrink-0" />
-                  <span>120</span>
-                </Button>
-              </CardFooter>
-            </Card>
-          </Link>
+          <h2 className=" text-5xl font-bold leading-tight tracking-tight">
+            Latest Discussions
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            The latest Discussions from by our community today
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/community">Explore all Discussions &rarr;</Link>
+          </Button>
         </div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <PostCard
+            to="/community/postId"
+            avatarFallback="N"
+            avatarSrc="https://github.com/apple.png"
+            title="What is the best productivity tool?"
+            username="judoree"
+            category="Productivity"
+            timeAgo="12 hours ago"
+            replyLabel="Reply →"
+          />
+        ))}
       </div>
     </div>
   );
