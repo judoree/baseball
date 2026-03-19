@@ -1,0 +1,87 @@
+---
+description: TypeScript, React Router (Remix), Shadcn, Tailwind, Supabase stack conventions
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Remix / React Router + TypeScript + Supabase
+
+Expert defaults: TypeScript, Node.js, React Router, React, Remix patterns (via `react-router`), Shadcn UI, Radix (only via Shadcn), Tailwind, Supabase.
+
+## Principles
+
+- Concise, technical TypeScript with accurate examples.
+- Functional and declarative style; no classes.
+- Prefer iteration and modularization over duplication.
+- Descriptive names with auxiliary verbs (`isLoading`, `hasError`).
+- File order: exported component → subcomponents → helpers → static content → types.
+
+## Naming
+
+- Directories: lowercase with dashes (e.g. `components/auth-wizard`).
+- Components: **named exports** (not default), except the **route module’s page component**, which must be the **`export default`** required by React Router.
+
+## TypeScript
+
+- TypeScript everywhere; **prefer `interface` over `type`** where both work.
+- **Avoid `enum`**; use const maps / records instead.
+- Functional components typed with interfaces.
+
+## Syntax
+
+- Use the `function` keyword for pure functions.
+- Keep simple conditionals concise (early return, avoid unnecessary braces for one-liners).
+- Declarative JSX.
+
+## UI
+
+- Build UI with **Shadcn UI** + **Tailwind**.
+- **Do not import from `@radix-ui/*`.** Use Shadcn-wrapped primitives only.
+
+## React Router (Remix-style) — imports and data APIs
+
+- **Do not import from `@remix-run/*`.** Use **`react-router`** for those APIs.
+- **New route pages** (`app/routes/...`): export **`loader`**, **`action`**, and **`meta`** (minimal stubs are fine until behavior exists).
+
+### Route module typing
+
+```ts
+import type { Route } from "./+types/some-route";
+```
+
+- `export function loader(args: Route.LoaderArgs) { ... }`
+- `export function action(args: Route.ActionArgs) { ... }`
+- `export const meta: Route.MetaFunction = (args) => [...]` — meta returns the usual meta descriptor array (same idea as `MetaFunction` from `react-router`).
+
+### Responses
+
+- **`json()` is gone.** Return **plain objects** from `loader` / `action` for normal success payloads.
+- Import **`data`** from **`react-router`** when the response needs a **status code** (or headers, etc.); otherwise return a plain object.
+
+```ts
+import { data } from "react-router";
+
+export function loader({ request }: Route.LoaderArgs) {
+  if (!authorized(request)) {
+    return data({ message: "Unauthorized" }, { status: 401 });
+  }
+  return { items: [] };
+}
+```
+
+### Page components — no `useLoaderData` / `useActionData`
+
+- **`useLoaderData` and `useActionData` must not be used** in route page components.
+- Type the default export with **`Route.ComponentProps`** from the same `./+types/...` module so **`loaderData`** / **`actionData`** (and other route props) come from **component props**, not hooks.
+
+```tsx
+import type { Route } from "./+types/home";
+
+export default function Home({ loaderData, actionData }: Route.ComponentProps) {
+  // ...
+}
+```
+
+## Supabase
+
+- Follow existing project patterns for Supabase client (browser vs server); keep auth and RLS assumptions explicit in loaders/actions.

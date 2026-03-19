@@ -4,7 +4,6 @@ import { ProductCard } from '../../features/products/components/product-card';
 import { PostCard } from '../../features/community/components/post-card';
 import { IdeaCard } from '../../features/ideas/components/idea-card';
 import { JobCard } from '../../features/jobs/components/job-card';
-import image from 'image/팀로고.png';
 
 export const meta: MetaFunction = () => {
   return [
@@ -96,29 +95,29 @@ export default function Homepage() {
       <div className="grid grid-cols-4 gap-4">
         <div>
           <h2 className=" text-5xl font-bold leading-tight tracking-tight">
-            KBO 구단
+            Lastest Jobs
           </h2>
-          <p className="text-xl font-light text-foreground">kbo 구단 상세</p>
+          <p className="text-xl font-light text-foreground">
+            Find jobs for your next project.
+          </p>
           <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/jobs">각 구단 Domain &rarr;</Link>
+            <Link to="/jobs">Explore all jobs &rarr;</Link>
           </Button>
-          {Array.from({ length: 10 }).map((_, index) => (
-            <JobCard
-              to="/jobs/jobId"
-              imageSrc={image}
-              imageAlt="kbo"
-              subtitle="KT wiz"
-              timeAgo="6 hours ago"
-              title="Suwon KT wiz"
-              tags={['수원', '케이티위즈']}
-              footerLines={[
-                '창단 첫 한국시리즈 우승 : 2021년',
-                'Play for the WIN',
-              ]}
-              actionLabel="Apply now"
-            />
-          ))}
         </div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <JobCard
+            to="/jobs/jobId"
+            companyLogoSrc="https://github.com/facebook.png"
+            companyLogoAlt="Facebook company logo"
+            companyName="Facebook"
+            postedAgo="12 hours ago"
+            title="Software Engineer"
+            badgeLabels={['Full time', 'Remote']}
+            salaryRange="$100,100 - $ 150,000"
+            location="Korea"
+            applyLabel="Apply now"
+          />
+        ))}
       </div>
     </div>
   );

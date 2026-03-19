@@ -1,6 +1,4 @@
 import { Link } from 'react-router';
-import { Button } from '../../../common/components/ui/button';
-import { Badge } from '../../../common/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -8,68 +6,69 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../common/components/ui/card';
+import { Badge } from '../../../common/components/ui/badge';
+import { Button } from '../../../common/components/ui/button';
 
-export type JobCardProps = {
+export interface JobCardProps {
   to: string;
-  imageSrc: string;
-  imageAlt: string;
-  /** 헤더 옆에 표시되는 짧은 이름 (예: 구단명) */
-  subtitle: string;
-  timeAgo: string;
+  companyLogoSrc: string;
+  companyLogoAlt?: string;
+  companyName: string;
+  postedAgo: string;
   title: string;
-  tags: string[];
-  footerLines: string[];
-  actionLabel: string;
-};
+  badgeLabels: string[];
+  salaryRange: string;
+  location: string;
+  applyLabel?: string;
+}
 
 export function JobCard({
   to,
-  imageSrc,
-  imageAlt,
-  subtitle,
-  timeAgo,
+  companyLogoSrc,
+  companyLogoAlt = 'Company logo',
+  companyName,
+  postedAgo,
   title,
-  tags,
-  footerLines,
-  actionLabel,
+  badgeLabels,
+  salaryRange,
+  location,
+  applyLabel = 'Apply now',
 }: JobCardProps) {
   return (
     <Link to={to}>
-      <Card className="bg-transparent transition-colors hover:bg-card/50">
+      <Card className="bg-transparent transition-colors hover:bg-card/50 h-full">
         <CardHeader>
-          <div className="flex gap-4 mb-8 items-center">
+          <div className="flex items-center gap-4 mb-8">
             <img
-              src={imageSrc}
-              alt={imageAlt}
+              src={companyLogoSrc}
+              alt={companyLogoAlt}
               className="size-10 rounded-full"
             />
             <div className="space-x-2">
-              <span className="text-accent-foreground">{subtitle}</span>
-              <span className="text-xs text-muted-foreground">{timeAgo}</span>
+              <span className="text-sm text-muted-foreground">{companyName}</span>
+              <span className="text-sm text-muted-foreground">{postedAgo}</span>
             </div>
           </div>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Badge key={tag} variant="outline">
-              {tag}
+          {badgeLabels.map((label, index) => (
+            <Badge key={`${label}-${index}`} variant="outline">
+              {label}
             </Badge>
           ))}
         </CardContent>
         <CardFooter className="flex justify-between">
-          <div className="flex flex-col gap-1">
-            {footerLines.map((line) => (
-              <span
-                key={line}
-                className="text-sm font-medium text-muted-foreground"
-              >
-                {line}
-              </span>
-            ))}
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-muted-foreground">
+              {salaryRange}
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {location}
+            </span>
           </div>
-          <Button variant="secondary" size="sm">
-            {actionLabel}
+          <Button variant="outline" size="sm">
+            {applyLabel}
           </Button>
         </CardFooter>
       </Card>
