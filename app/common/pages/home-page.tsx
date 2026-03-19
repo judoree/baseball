@@ -3,6 +3,8 @@ import { Button } from '../components/ui/button';
 import { ProductCard } from '../../features/products/components/product-card';
 import { PostCard } from '../../features/community/components/post-card';
 import { IdeaCard } from '../../features/ideas/components/idea-card';
+import { JobCard } from '../../features/jobs/components/job-card';
+import image from 'image/팀로고.png';
 
 export const meta: MetaFunction = () => {
   return [
@@ -90,6 +92,33 @@ export default function Homepage() {
             claimed={index % 2 === 0}
           />
         ))}
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h2 className=" text-5xl font-bold leading-tight tracking-tight">
+            KBO 구단
+          </h2>
+          <p className="text-xl font-light text-foreground">kbo 구단 상세</p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/jobs">각 구단 Domain &rarr;</Link>
+          </Button>
+          {Array.from({ length: 10 }).map((_, index) => (
+            <JobCard
+              to="/jobs/jobId"
+              imageSrc={image}
+              imageAlt="kbo"
+              subtitle="KT wiz"
+              timeAgo="6 hours ago"
+              title="Suwon KT wiz"
+              tags={['수원', '케이티위즈']}
+              footerLines={[
+                '창단 첫 한국시리즈 우승 : 2021년',
+                'Play for the WIN',
+              ]}
+              actionLabel="Apply now"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
