@@ -1,41 +1,66 @@
+import { DateTime } from 'luxon';
 import type { Route } from './+types/daily-leaderboard-page';
-import { ProductCard } from '../components/product-card';
+import { data, isRouteErrorResponse } from 'react-router';
+import z from 'zod';
 
-export const meta: Route.MetaFunction = ({ params }) => {
-  return [
-    {
-      title: `Daily leaderboard ${params.year}-${params.month}-${params.day} | make baseball`,
-    },
-    { name: 'description', content: 'Top products for the day' },
-  ];
+const paramsSchema = z.object({
+  year: z.coerce.number(),
+  month: z.coerce.number(),
+  day: z.coerce.number(),
+});
+
+export const loader = ({ params }: Route.LoaderArgs) => {
+  const { success, data: parsedData } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_params',
+        message: 'Invalid params',
+      },
+      { status: 400 }
+    );
+  }
+  const date = DateTime.fromObject(parsedData).setZone('Asia/Seoul');
+  if (!date.isValid) {
+    throw data(
+      {
+        error_code: 'invalid_date',
+        message: 'Invalid date',
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+  const today = DateTime.now().setZone('Asia/Seoul').startOf('day');
+  if (date > today) {
+    throw data(
+      {
+        error_code: 'future_date',
+        message: 'Future date',
+      },
+      { status: 400 }
+    );
+  }
+  return {
+    date,
+  };
 };
 
-export default function DailyLeaderboardPage({ params }: Route.ComponentProps) {
-  const { year, month, day } = params;
+export default function DailyLeaderboardPage() {
+  return <div className="px-20 space-y-10"></div>;
+}
 
-  return (
-    <div className="px-20 space-y-10">
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (isRouteErrorResponse(error)) {
+    return (
       <div>
-        <h1 className="text-5xl font-bold leading-tight tracking-tight">
-          Daily leaderboard
-        </h1>
-        <p className="text-xl font-light text-muted-foreground">
-          {year}-{month}-{day}
-        </p>
+        {error.data.message} / {error.data.error_code}
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 9 }).map((_, index) => (
-          <ProductCard
-            key={index}
-            to="/products/product-example"
-            title={`Product #${index + 1}`}
-            description="Placeholder entry for this period."
-            commentsCount={3}
-            viewsCount={80 + index}
-            votesCount={40 - index}
-          />
-        ))}
-      </div>
-    </div>
-  );
+    );
+  }
+  if (error instanceof Error) {
+    return <div>{error.message}</div>;
+  }
+  return <div>Error </div>;
 }
