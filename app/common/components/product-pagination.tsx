@@ -17,13 +17,13 @@ export default function ProductPagination({
   totalPages,
 }: ProductPaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) ?? 1;
+  const page = Number(searchParams.get('page') ?? 1);
   const onClick = (page: number) => {
     searchParams.set('page', page.toString());
     setSearchParams(searchParams);
   };
   return (
-    <div>
+    <div className="space-x-5">
       <Pagination>
         <PaginationContent>
           {page === 1 ? null : (

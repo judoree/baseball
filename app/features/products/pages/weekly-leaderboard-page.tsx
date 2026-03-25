@@ -1,43 +1,141 @@
+import { DateTime } from 'luxon';
 import type { Route } from './+types/weekly-leaderboard-page';
+import { data, isRouteErrorResponse, Link } from 'react-router';
+import z from 'zod';
+import { Hero } from '~/common/components/hero';
 import { ProductCard } from '../components/product-card';
+import { Button } from '~/common/components/ui/button';
+import ProductPagination from '~/common/components/product-pagination';
+
+const paramsSchema = z.object({
+  year: z.coerce.number(),
+  week: z.coerce.number(),
+});
 
 export const meta: Route.MetaFunction = ({ params }) => {
+  const date = DateTime.fromObject({
+    weekYear: Number(params.year),
+    weekNumber: Number(params.week),
+  })
+    .setZone('Asia/Seoul')
+    .setLocale('ko');
   return [
     {
-      title: `Weekly leaderboard ${params.year} W${params.week} | make baseball`,
+      title: `Best of week ${date
+        .startOf('week')
+        .toLocaleString(DateTime.DATE_SHORT)} - ${date
+        .endOf('week')
+        .toLocaleString(DateTime.DATE_SHORT)} | wemake`,
     },
-    { name: 'description', content: 'Top products for the week' },
   ];
 };
 
-export default function WeeklyLeaderboardPage({
-  params,
-}: Route.ComponentProps) {
-  const { year, week } = params;
+export const loader = ({ params }: Route.LoaderArgs) => {
+  const { success, data: parsedData } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_params',
+        message: 'Invalid params',
+      },
+      { status: 400 }
+    );
+  }
+  const date = DateTime.fromObject({
+    weekYear: parsedData.year,
+    weekNumber: parsedData.week,
+  }).setZone('Asia/Seoul');
+  if (!date.isValid) {
+    throw data(
+      {
+        error_code: 'invalid_date',
+        message: 'Invalid date',
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+  const today = DateTime.now().setZone('Asia/Seoul').startOf('day');
+  if (date > today) {
+    throw data(
+      {
+        error_code: 'future_date',
+        message: 'Future date',
+      },
+      { status: 400 }
+    );
+  }
+  return {
+    ...parsedData,
+  };
+};
 
+export default function WeeklyLeaderboardPage({
+  loaderData,
+}: Route.ComponentProps) {
+  const urlDate = DateTime.fromObject({
+    weekYear: loaderData.year,
+    weekNumber: loaderData.week,
+  });
+  const previousWeek = urlDate.minus({ weeks: 1 });
+  const nextWeek = urlDate.plus({ weeks: 1 });
+  const isToday = urlDate.equals(DateTime.now().startOf('week'));
   return (
-    <div className="px-20 space-y-10">
-      <div>
-        <h1 className="text-5xl font-bold leading-tight tracking-tight">
-          Weekly leaderboard
-        </h1>
-        <p className="text-xl font-light text-muted-foreground">
-          {year} · week {week}
-        </p>
+    <div>
+      <Hero
+        title={`Best of week ${urlDate
+          .startOf('week')
+          .toLocaleString(DateTime.DATE_SHORT)} - ${urlDate
+          .endOf('week')
+          .toLocaleString(DateTime.DATE_SHORT)}`}
+      />
+      <div className="flex gap-2 justify-center ">
+        <Button asChild variant="secondary">
+          <Link
+            to={`/products/leaderboards/weekly/${previousWeek.year}/${previousWeek.weekNumber}`}
+          >
+            &larr; {previousWeek.toLocaleString(DateTime.DATE_SHORT)}
+          </Link>
+        </Button>
+        {!isToday ? (
+          <Button variant="secondary" asChild>
+            <Link
+              to={`/products/leaderboards/weekly/${nextWeek.year}/${nextWeek.weekNumber}`}
+            >
+              {nextWeek.toLocaleString(DateTime.DATE_SHORT)} &rarr;
+            </Link>
+          </Button>
+        ) : null}
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 9 }).map((_, index) => (
+      <div className="space-y-5 w-full max-w-3xl mx-auto ">
+        {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            to="/products/product-example"
-            title={`Product #${index + 1}`}
-            description="Placeholder entry for this period."
-            commentsCount={6}
-            viewsCount={120 + index}
-            votesCount={55 - index}
+            to="/products/productId"
+            title="Product Name"
+            description="Product Description"
+            commentsCount={12}
+            viewsCount={12}
+            votesCount={120}
           />
         ))}
       </div>
+      <ProductPagination totalPages={10} />
     </div>
   );
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        {error.data.message} / {error.data.error_code}
+      </div>
+    );
+  }
+  if (error instanceof Error) {
+    return <div>{error.message}</div>;
+  }
+  return <div>Error </div>;
 }
