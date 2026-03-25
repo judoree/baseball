@@ -27,7 +27,7 @@ export function ProductCard({
   votesCount,
 }: ProductCardProps) {
   return (
-    <Link to={to}>
+    <Link to={to} className="block">
       <Card className="w-full flex flex-row items-center justify-between bg-transparent hover:bg-primary/10">
         <CardHeader className="w-[-webkit-fill-available]">
           <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
@@ -57,4 +57,3 @@ export function ProductCard({
     </Link>
   );
 }
-
