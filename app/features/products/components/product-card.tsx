@@ -47,7 +47,7 @@ export function ProductCard({
             </div>
           </div>
         </CardHeader>
-        <CardFooter className="py-0">
+        <CardFooter className="py-0 border-t-0">
           <Button variant="outline" className="flex flex-col h-18">
             <ChevronsUpIcon className="size-4 shrink-0" />
             <span>{votesCount}</span>
