@@ -1,6 +1,9 @@
 import { Form, type MetaFunction } from 'react-router';
-import { Button } from '~/common/components/ui/button';
-import { cn } from '~/lib/utils';
+import { Hero } from '~/common/components/hero';
+import InputPair from '~/common/components/input-pair';
+import SelectPair from '~/common/components/select-pair';
+import { Input } from '~/common/components/ui/input';
+import { Label } from '~/common/components/ui/label';
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,82 +12,63 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const inputClass = cn(
-  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors',
-  'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
-  'disabled:cursor-not-allowed disabled:opacity-50'
-);
-
-const textareaClass = cn(
-  'flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
-  'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
-  'disabled:cursor-not-allowed disabled:opacity-50'
-);
-
 export default function SubmitPage() {
   return (
-    <div className="px-20 space-y-10 max-w-2xl">
-      <div>
-        <h1 className="text-5xl font-bold leading-tight tracking-tight">
-          Submit a product
-        </h1>
-        <p className="text-xl font-light text-muted-foreground">
-          Tell us about something the community should know
-        </p>
-      </div>
-      <Form method="post" className="space-y-6">
-        <div className="space-y-2">
-          <label htmlFor="name" className="text-sm font-medium leading-none">
-            Name
-          </label>
-          <input
+    <div>
+      <Hero title="Form 페이지 작업중" subtitle="Form 페이지 서브 제목" />
+      <Form className="grid grid-cols-2 gap-10 max-w-5xl mx-auto">
+        <div className="space-y-4">
+          <InputPair
+            label="Name"
+            description="This is the name of your product"
             id="name"
             name="name"
+            type="text"
             required
-            placeholder="Product name"
-            className={inputClass}
+            placeholder="Name of your product"
           />
-        </div>
-        <div className="space-y-2">
-          <label htmlFor="url" className="text-sm font-medium leading-none">
-            URL
-          </label>
-          <input
-            id="url"
-            name="url"
-            type="url"
-            required
-            placeholder="https://"
-            className={inputClass}
-          />
-        </div>
-        <div className="space-y-2">
-          <label htmlFor="tagline" className="text-sm font-medium leading-none">
-            Tagline
-          </label>
-          <input
+          <InputPair
+            label="Tagline"
+            description="60 characters or less"
             id="tagline"
             name="tagline"
-            placeholder="One line description"
-            className={inputClass}
+            required
+            type="text"
+            placeholder="A concise description of your product"
           />
-        </div>
-        <div className="space-y-2">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium leading-none"
-          >
-            Description
-          </label>
-          <textarea
+          <InputPair
+            label="URL"
+            description="The URL of your product"
+            id="url"
+            name="url"
+            required
+            type="url"
+            placeholder="https://example.com"
+          />
+          <InputPair
+            textArea
+            label="Description"
+            description="A detailed description of your product"
             id="description"
             name="description"
-            rows={5}
-            placeholder="What does it do? Who is it for?"
-            className={textareaClass}
+            required
+            type="text"
+            placeholder="A detailed description of your product"
+          />
+          <SelectPair
+            name="category"
+            required
+            placeholder="Select a category"
+            label="Category"
+            description="The category of your product"
+            options={[
+              { label: 'AI', value: 'ai' },
+              { label: 'Design', value: 'design' },
+              { label: 'Backend', value: 'backend' },
+              { label: 'Frontend', value: 'frontend' },
+            ]}
           />
         </div>
-        <Button type="submit">Submit</Button>
       </Form>
     </div>
   );
