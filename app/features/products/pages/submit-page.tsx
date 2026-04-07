@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Form, type MetaFunction } from 'react-router';
 import { Hero } from '~/common/components/hero';
 import InputPair from '~/common/components/input-pair';
 import SelectPair from '~/common/components/select-pair';
+import { Button } from '~/common/components/ui/button';
 import { Input } from '~/common/components/ui/input';
 import { Label } from '~/common/components/ui/label';
 
@@ -13,6 +15,13 @@ export const meta: MetaFunction = () => {
 };
 
 export default function SubmitPage() {
+  const [icon, setIcon] = useState<string | null>(null);
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      setIcon(URL.createObjectURL(file));
+    }
+  };
   return (
     <div>
       <Hero title="Form 페이지 작업중" subtitle="Form 페이지 서브 제목" />
@@ -68,6 +77,38 @@ export default function SubmitPage() {
               { label: 'Frontend', value: 'frontend' },
             ]}
           />
+          <Button className="w-full " type="submit" size="lg">
+            Submit
+          </Button>
+        </div>
+        <div className="flex flex-col space-y-2 items-start">
+          <Label className="flex flex-col space-y-2 ">
+            Icon {''}
+            <small className="text-muted-foreground">
+              This is the icon of your product
+            </small>
+          </Label>
+          <Input
+            type="file"
+            className="w-1/2"
+            onChange={onChange}
+            required
+            name="icon"
+          />
+          <div className=" flex flex-col text-xs">
+            <span className="text-muted-foreground ">
+              Recommended size: 128X128px
+            </span>
+            <span className="text-muted-foreground ">
+              Allowed formats : PNG , JPEG
+            </span>
+            <span className="text-muted-foreground ">Max file size : 1MB</span>
+          </div>
+          {icon ? (
+            <div className="size-40 rounded-xl shadow-xl overflow-hidden ">
+              <img src={icon} className="object-cover w-full h-full" />
+            </div>
+          ) : null}
         </div>
       </Form>
     </div>
