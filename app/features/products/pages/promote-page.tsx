@@ -1,12 +1,13 @@
-import { Link, type MetaFunction } from 'react-router';
+import { DateTime } from 'luxon';
+import { useState } from 'react';
+import type { DateRange } from 'react-day-picker';
+import { Form, type MetaFunction } from 'react-router';
+import { Hero } from '~/common/components/hero';
+import SelectPair from '~/common/components/select-pair';
 import { Button } from '~/common/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '~/common/components/ui/card';
+import { Calendar } from '~/common/components/ui/calendar';
+
+import { Label } from '~/common/components/ui/label';
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,32 +17,62 @@ export const meta: MetaFunction = () => {
 };
 
 export default function PromotePage() {
+  const [promotionPeriod, setPromtionPeriod] = useState<
+    DateRange | undefined
+  >();
+  const totalDays =
+    promotionPeriod?.from && promotionPeriod.to
+      ? DateTime.fromJSDate(promotionPeriod.to).diff(
+          DateTime.fromJSDate(promotionPeriod.from),
+          'days'
+        ).days
+      : 0;
   return (
-    <div className="px-20 space-y-10 max-w-3xl">
-      <div>
-        <h1 className="text-5xl font-bold leading-tight tracking-tight">
-          Promote
-        </h1>
-        <p className="text-xl font-light text-muted-foreground">
-          Get extra reach during your launch window
-        </p>
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Featured placement</CardTitle>
-          <CardDescription>
-            This is a placeholder for your promotion tiers and checkout flow.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-3">
-          <Button asChild>
-            <Link to="/products/submit">Submit a product first</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/products">Browse products</Link>
-          </Button>
-        </CardContent>
-      </Card>
+    <div>
+      <Hero
+        title="Promote Your Product"
+        subtitle="Boost your product's visibilty"
+      />
+      <Form className="max-w-sm mx-auto flex flex-col gap-10 items-center">
+        <SelectPair
+          label="Selct a product"
+          name="product"
+          description="Select the product you want to promote"
+          placeholder="Select a product"
+          options={[
+            {
+              label: 'AI Dark Mode Maker',
+              value: 'ai-dark-mode-maker',
+            },
+            {
+              label: 'AI Dark Mode Maker',
+              value: 'ai-dark-mode-maker-1',
+            },
+            {
+              label: 'AI Dark Mode Maker',
+              value: 'ai-dark-mode-maker-2',
+            },
+          ]}
+        />
+        <div className="flex flex-col gap-2 items-center w-full">
+          <Label className="flex flex-col gap-2">
+            Select a range of dates for promotion{''}
+            <small className="text-muted-foreground text-center ">
+              Minimum duration is 3 days
+            </small>
+          </Label>
+          <Calendar
+            mode="range"
+            selected={promotionPeriod}
+            onSelect={setPromtionPeriod}
+            min={3}
+            disabled={{ before: new Date() }}
+          />
+        </div>
+        <Button disabled={totalDays === 0}>
+          Go to checkout (${totalDays * 20})
+        </Button>
+      </Form>
     </div>
   );
 }
