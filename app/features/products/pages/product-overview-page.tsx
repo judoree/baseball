@@ -15,62 +15,20 @@ export default function ProductOverviewPage({
 }: Route.ComponentProps) {
   return (
     <div className="space-y-10">
-      <div className="flex justify-between">
-        <div className="flex gap-10">
-          <div className="size-40 rounded-xl shadow-xl bg-primary/50 "></div>
-          <div>
-            <h1 className="text-5xl font-bold">Product Name</h1>
-            <p className="text-2xl font-light text-muted-foreground">
-              Product description
-            </p>
-            <div className="mt-5 flex items-center gap-2">
-              <div className="flex text-red-600">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon className="size-4 " fill="currentcolor" />
-                ))}
-              </div>
-              <span className="text-muted-foreground">100 reviews</span>
-            </div>
-          </div>
+      <div className="space-y-10">
+        <div className="space-y-2.5">
+          <h3 className="text-lg font-bold">What is this product?</h3>
+          <p className="text-muted-foreground">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+            quos.
+          </p>
         </div>
-        <div className="flex gap-5">
-          <Button
-            variant={'secondary'}
-            size="lg"
-            className="text-lg h-14 px-10"
-          >
-            Visit Website
-          </Button>
-          <Button size="lg" className="text-lg h-14 px-10">
-            <ChevronUpIcon size="lg" />
-            Upvote(100)
-          </Button>
-        </div>
-      </div>
-      <div className="gap-2.5 flex ">
-        <div className="gap-2.5 fle">
-          <Button asChild variant={'outline'}>
-            <Link to={`products/${productId}/overview`}>Overview</Link>
-          </Button>
-          <Button variant={'outline'}>
-            <Link to={`products/${productId}/reviews`}>Review</Link>
-          </Button>
-        </div>
-        <div className="space-y-10">
-          <div className="space-y-2.5">
-            <h3 className="text-lg font-bold">What is this product?</h3>
-            <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-              quos.
-            </p>
-          </div>
-          <div className="space-y-2.5 ">
-            <h3 className="text-lg font-bold">How dose it work?</h3>
-            <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-              quos.
-            </p>
-          </div>
+        <div className="space-y-2.5">
+          <h3 className="text-lg font-bold">How dose it work?</h3>
+          <p className="text-muted-foreground">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+            quos.
+          </p>
         </div>
       </div>
     </div>
