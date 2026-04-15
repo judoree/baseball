@@ -5,35 +5,33 @@ import {
   AvatarImage,
 } from '~/common/components/ui/avatar';
 
-type ReviewCardProps = {
-  authorName: string;
+interface ReviewCardProps {
   username: string;
-  avatarSrc: string;
-  avatarFallback: string;
+  handle: string;
+  avatarUrl: string;
   rating: number;
   content: string;
-  createdAt: string;
-};
+  postedAt: string;
+}
 
 export function ReviewCard({
-  authorName,
   username,
-  avatarSrc,
-  avatarFallback,
+  handle,
+  avatarUrl,
   rating,
   content,
-  createdAt,
+  postedAt,
 }: ReviewCardProps) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarFallback>{avatarFallback}</AvatarFallback>
-          <AvatarImage src={avatarSrc} />
+          <AvatarFallback>{username[0]}</AvatarFallback>
+          <AvatarImage src={avatarUrl} />
         </Avatar>
         <div>
-          <h4 className="text-lg font-bold">{authorName}</h4>
-          <p className="text-sm text-muted-foreground">{username}</p>
+          <h4 className="text-lg font-bold">{username}</h4>
+          <p className="text-sm text-muted-foreground">{handle}</p>
         </div>
       </div>
       <div className="flex text-yellow-400">
@@ -42,7 +40,7 @@ export function ReviewCard({
         ))}
       </div>
       <p className="text-muted-foreground">{content}</p>
-      <span className="text-xs text-muted-foreground">{createdAt}</span>
+      <span className="text-xs text-muted-foreground">{postedAt}</span>
     </div>
   );
 }
