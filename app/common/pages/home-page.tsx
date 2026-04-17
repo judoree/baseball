@@ -107,7 +107,8 @@ export default function Homepage() {
         </div>
         {Array.from({ length: 10 }).map((_, index) => (
           <JobCard
-            to="/jobs/jobId"
+            key={`jobid-${index}`}
+            to={`jobid-${index}`}
             companyLogoSrc="https://github.com/facebook.png"
             companyLogoAlt="Facebook company logo"
             companyName="Facebook"
