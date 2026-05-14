@@ -6,7 +6,7 @@ import { Textarea } from './ui/textarea';
 export default function InputPair({
   label,
   description,
-  textArea,
+  textArea = false,
   ...rest
 }: {
   label: string;
@@ -14,14 +14,13 @@ export default function InputPair({
   textArea?: boolean;
 } & InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>) {
   return (
-    <div className="space-y-2 flex flex-col items-start">
-      <Label htmlFor={rest.id} className="flex flex-col gpa-2 items-start">
+    <div className="space-y-2 flex flex-col">
+      <Label htmlFor={rest.id} className="flex flex-col gap-1">
         {label}
         <small className="text-muted-foreground">{description}</small>
       </Label>
-
       {textArea ? (
-        <Textarea rows={8} className="resize-none" {...rest} />
+        <Textarea rows={4} className="resize-none" {...rest} />
       ) : (
         <Input {...rest} />
       )}
